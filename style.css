@@ -1,0 +1,106 @@
+/* login page */
+
+body{
+    position: relative;
+    min-height: 140vh;
+    margin:0;
+    font-size: 20px;
+    font-family: sans-sherif;
+    background-color: ;
+    background-image: url("img4.jpg");
+    opacity: ;
+    
+    background-repeat: ;
+}
+
+    h3, h4{
+        text-align: center;
+        margin:20px 3px;
+        padding: 10px 1px;
+        }
+        {
+
+        }
+       
+    #submit{background-color: rgb(46, 45, 45);
+      border-radius: 1px;
+        color: white;
+        padding: 10px;
+        border: none;
+        margin: 15px auto;
+        cursor: pointer;
+        width: 95%;
+        font-size: 1.5rem;
+        
+        }
+        #password,#email, #username, #message
+{
+display: inline-block;
+margin: 10px 0;
+padding: 10px 5px;
+border: 1px solid grey;
+
+width: 100%;
+}
+
+#fcolor{
+    display: inline-block;
+    margin: 10px 0;
+    padding: 0px 5px;
+    border: 1px solid grey;
+    
+    width: 100%;
+    }
+form{
+   
+    margin: 25px auto;
+    display: block;
+    padding: 15px;
+    width: 75%;
+    
+}
+    .success{
+   
+        background-color: rgb(195, 137, 106);
+        color: white;
+       justify-content: center;
+        text-align: center;
+        width: 60%;
+        
+        margin: 25px auto;
+       }
+
+    .content{
+        display: flexbox;
+        justify-content: center;
+        background-color:black;
+        color: white;
+        width: 45%;
+        margin: auto;
+        text-align: center;
+        font-size: 1.5rem;
+    }
+
+    
+
+    footer {
+        position: absolute;
+        top:auto;
+        bottom:0;
+        height: 70px;
+        width: 100%;
+        padding: 10px 10px 0px 10px;
+        background-color: grey;
+        text-decoration: none; 
+        text-align: center;
+        }
+       
+            main{
+                margin: 80px 30px ;
+                }
+
+
+
+
+  
+       

@@ -1,0 +1,92 @@
+npm i nodemon --save-dev
+
+
+        //app.js
+        
+// importing user context
+const User = require("./user");
+
+// Register
+app.post("/register", async (req, res) => {
+
+    // Our register logic starts here
+     try {
+      // Get user input
+      const { firstName, lastName, email, password } = req.body;
+  
+      // Validate user input
+      if (!(email && password && firstName && lastName)) {
+        res.status(400).send("All input is required");
+      }
+  
+      // check if user already exist
+      // Validate if user exist in our database
+      const oldUser = await User.findOne({ email });
+  
+      if (oldUser) {
+        return res.status(409).send("User Already Exist. Please Login");
+      }
+  
+      //Encrypt user password
+      encryptedUserPassword = await bcrypt.hash(password, 10);
+  
+      // Create user in our database
+      const user = await User.create({
+        first_name: firstName,
+        last_name: lastName,
+        email: email.toLowerCase(), // sanitize
+        password: encryptedUserPassword,
+      });
+  
+      // Create token
+      const token = jwt.sign(
+        { user_id: user._id, email },
+        process.env.TOKEN_KEY,
+        {
+          expiresIn: "5h",
+        }
+      );
+      // save user token
+      user.token = token;
+  
+      // return new user
+      res.status(201).json(user);
+    } catch (err) {
+      console.log(err);
+    }
+    // Our register logic ends here
+  });
+  
+  // ...
+
+// Login
+app.post("/login", (req, res) => {
+// our login logic goes here
+});
+
+
+
+    //database.js
+
+const mongoose = require("mongoose");
+
+const { MONGO_URI } = process.env;
+
+exports.connect = () => {
+  // Connecting to the database
+  mongoose
+    .connect(MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+    })
+    .then(() => {
+      console.log("Successfully connected to database");
+    })
+    .catch((error) => {
+      console.log("database connection failed. exiting now...");
+      console.error(error);
+      process.exit(1);
+    });
+};
