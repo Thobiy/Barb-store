@@ -17,7 +17,7 @@ const userData = {
 try {
     //send post rerquest to backend
 
-    const response = await fetch('http://localhost:5000/register', {
+    const response = await fetch('https://barb-store.onrender.com/register', {
         method: 'POST',
         headers: {
             'content-Type': 'application/json'

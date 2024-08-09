@@ -19,7 +19,10 @@ const app = express();
 
 // Middleware
 
-app.use(cors());
+app.use(cors({
+  origin: " https://barb-store-p0lwiqm8a-thobiys-projects.vercel.app",
+  credentials: true
+}));
 app.use(cookieParser());
 
 app.use(express.json());
