@@ -17,7 +17,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
     try {
         // Send POST request to backend
-        const response = await fetch('https://barb-store.onrender.com/login', {
+        const response = await fetch(  
+            'https://barb-store.onrender.com/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

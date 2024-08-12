@@ -6,12 +6,12 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-const { httpLogin, httpProtected } = require("../controllers/auth.controller");
+const { httpLogin, httpProtected, httpLogout } = require("../controllers/auth.controller");
 
 
 const Products = require("../models/products.model.js");
 const { httpRegisterUser } = require("../controllers/user.controller.js");
-//const cookieParser = require("cookie-parser");
+
 
 const app = express();
 
@@ -39,7 +39,8 @@ app.post("/products", async (req, res) => {
 
 app.post("/login", httpLogin);
 app.post("/register", httpRegisterUser);
-app.post("/protected", httpProtected)
+app.post("/protected", httpProtected);
+app.post("/logout", httpLogout)
 
 
 app.use("/*", (req, res) => {

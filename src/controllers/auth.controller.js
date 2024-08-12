@@ -60,6 +60,13 @@ const sessionToken = uuid.v4();
     
 }
 
+async function httpLogout(req, res) {
+    res.clearCookie('auth_cok');
+    res.send('Logged out successfully');
+}
+
+
+
 async function httpProtected(req, res){
 
     const sessionToken = req.cookies["auth_cok"];
@@ -88,5 +95,6 @@ async function httpProtected(req, res){
 module.exports = {
     httpLogin,
     httpProtected,
+    httpLogout,
 
 };
