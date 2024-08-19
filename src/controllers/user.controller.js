@@ -34,16 +34,20 @@ async function httpRegisterUser(req, res) {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "server error "});
+        res.status(500).json({ message: "server error "}); 
     }
 }
 
 
 async function httpGetUsers(req, res) {
+    //try {
     //Access user database and return users
     const users = await User.find({}, "-password");
     res.status(200).json({ message: "Access granted", user: users });
-
+   // } catch (error) {
+      //  console.error('Error retrieving users:', error);
+   //     res.status(500).json({ message: 'Server error' });
+   // }
 }
 
 module.exports = {

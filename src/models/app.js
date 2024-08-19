@@ -5,8 +5,9 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const path = require('path');
 
-const { httpLogin, httpProtected, httpLogout } = require("../controllers/auth.controller");
+const { httpLogin, httpProtected, httpAuthStatus, httpTest } = require("../controllers/auth.controller");
 
 
 const Products = require("../models/products.model.js");
@@ -16,16 +17,28 @@ const { httpRegisterUser } = require("../controllers/user.controller.js");
 const app = express();
 
 
-
-// Middleware
-
 app.use(cors({
+  origin: 'http://127.0.0.1:5000',
+  credentials: true
+
+}))
+
+/*
+
+// Middleware for production
+//app.use(cors({
   origin: " https://barb-store-p0lwiqm8a-thobiys-projects.vercel.app",
   credentials: true
 }));
+
+*/
+
+
 app.use(cookieParser());
 
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, '..', 'static')));
 
 // Routes
 
@@ -40,7 +53,18 @@ app.post("/products", async (req, res) => {
 app.post("/login", httpLogin);
 app.post("/register", httpRegisterUser);
 app.post("/protected", httpProtected);
-app.post("/logout", httpLogout)
+app.get("/auth-status", httpAuthStatus);
+app.get("/test-cookie", httpTest);
+
+
+
+
+
+
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
 
 
 app.use("/*", (req, res) => {
