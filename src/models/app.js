@@ -7,10 +7,10 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require('path');
 
-const { httpLogin, httpProtected, httpAuthStatus, httpTest, httpAddToCart } = require("../controllers/auth.controller");
+const { httpLogin, httpProtected, httpAuthStatus, httpTest, httpAddToCart, httpCreateProduct, httpGetProducts } = require("../controllers/auth.controller");
 
 
-const Products = require("../models/products.model.js");
+const Products = require("../models/products.model")
 const { httpRegisterUser } = require("../controllers/user.controller.js");
 
 
@@ -57,6 +57,8 @@ app.post("/protected", httpProtected);
 app.get("/auth-status", httpAuthStatus);
 app.get("/test-cookie", httpTest);
 app.post('/cart', httpAddToCart);
+app.post('/products', httpCreateProduct);
+app.get('/products', httpGetProducts);
 
 
 
