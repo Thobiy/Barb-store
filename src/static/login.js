@@ -1,5 +1,5 @@
 
-
+/*
 // Login Request Handling
 
 document.getElementById('loginForm').addEventListener('submit', async function(event) {
@@ -40,5 +40,50 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         alert('An error occurred during login.');
     }
 });
+
+*/
+
+document.addEventListener('DOMContentLoaded', function() {
+    const loginButton = document.getElementById('login-but');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+
+    loginButton.addEventListener('click', async function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (!email || !password) {
+            alert('Please enter both email and password.');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:5000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password }),
+                credentials: 'include'  // Include cookies in the request
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.message === 'Login successful') {
+                // Redirect to the homepage or dashboard after successful login
+                window.location.href = '/index.html'; // Update this URL as needed
+            } else {
+                console.error('Login failed:', data.message);
+                alert('Login failed: ' + data.message); // Display an error message
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+            alert('An error occurred. Please try again.'); // Display a generic error message
+        }
+    });
+});
+
 
 

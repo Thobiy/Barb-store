@@ -1,6 +1,6 @@
 
 const bcrypt = require("bcrypt");
-
+const Session = require('../models/session.model');
 const User = require("../models/user.model");
 const uuid = require("uuid");
 
@@ -30,25 +30,24 @@ async function httpLogin(req, res) {
 
         // If the credentials are valid, create a session token
         const sessionToken = uuid.v4();
-        console.log('Setting cookie:', sessionToken);
 
-        // Store session data (e.g., in an in-memory object or a database)
-        sessions[sessionToken] = {
+        // Store the session data in the database
+        await Session.create({
+            token: sessionToken,
             userId: user._id,
             expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 1-day expiry
-        };
+        });
 
         // Set the session token in an HTTP-only cookie
         res.cookie('auth_cok', sessionToken, {
             httpOnly: true,
-            secure: false,
-            sameSite: 'None',
+            secure: false, // Set to true if you're using HTTPS
+            sameSite: 'Lax',
             maxAge: 24 * 60 * 60 * 1000, // 1 day
             path: '/',
         });
 
-        console.log('cookie set:', sessionToken);
-        console.log('Set-Cookie Header:', res.getHeader('Set-Cookie'));
+        console.log('Cookie set:', sessionToken);
 
         // Respond with a success message
         return res.status(200).json({ message: 'Login successful' });
@@ -58,8 +57,7 @@ async function httpLogin(req, res) {
     }
 }
 
-
-
+   
 
 
 /* initial approach to route login
@@ -122,23 +120,34 @@ const sessionToken = uuid.v4();
 */
 
 async function httpAuthStatus(req, res) {
-    const sessionToken = req.cookies["auth_cok"];
+    const sessionToken = req.query.token || req.cookies['auth_cok'];
 
-    if (!sessionToken) {
-        return res.status(200).json({authenticated: false });
-
-    }
+    // Check if the session token exists and has not expired
+    if (sessionToken && sessions[sessionToken] && sessions[sessionToken].expiresAt > new Date()) {
+        console.log('Authenticated user with session token:', sessionToken);
     
-
-    const currentSession = sessions[sessionToken];
-
-    if(!currentSession  || currentSession.expiresAt < new Date()) {
-        return res.status(200).json({authenticated: false });
-
+        // Refresh the session cookie by resetting it with the same token
+        res.cookie('auth_cok', sessionToken, {
+            httpOnly: true,
+            secure: false,  // Set to true if using HTTPS
+            sameSite: 'Lax',  // Adjust this as per your security needs
+            maxAge: 24 * 60 * 60 * 1000,  // 1 day
+            path: '/',
+        });
+    
+        return res.status(200).json({ authenticated: true });
+    } else {
+        if (!sessionToken) {
+            console.log('No session token provided.');
+        } else if (!sessions[sessionToken]) {
+            console.log('Invalid or expired session token:', sessionToken);
+        } else {
+            console.log('Session token has expired:', sessionToken);
+        }
+    
+        return res.status(200).json({ authenticated: false });
     }
-    return res.status(200).json({ authenticated: true });
-}
-
+}    
 
 
 async function httpProtected(req, res){
@@ -180,6 +189,44 @@ async function httpTest(req, res){
 
         
       };
+
+
+async function httpAddToCart(req, res) {
+    const { productId, name, price } = req.body;
+
+    // Initialize the cart if it doesn't exist
+    if (!req.session.cart) {
+        req.session.cart = [];
+    }
+
+   
+    const existingProduct = req.session.cart.find(item => item.productId === productId);
+
+    if (existingProduct) {
+        // If the product is already in the cart, increment the quantity
+        existingProduct.quantity += 1;
+    } else {
+        // If the product is not in the cart, add it
+        req.session.cart.push({
+            productId,
+            name,
+            price,
+            quantity: 1,
+        });
+    }
+
+    res.status(200).json({ cartItemCount: req.session.cart.length });
+}
+
+// Fetching the cart details
+async function httpGetCart(req, res) {
+    const cart = req.session.cart || [];
+    res.status(200).json(cart);
+}
+
+    
+    
+    
     
       
 
@@ -188,6 +235,7 @@ module.exports = {
     httpLogin,
     httpProtected,
     httpAuthStatus,
-    httpTest
+    httpTest,
+    httpAddToCart
 
 };

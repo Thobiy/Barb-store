@@ -7,7 +7,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require('path');
 
-const { httpLogin, httpProtected, httpAuthStatus, httpTest } = require("../controllers/auth.controller");
+const { httpLogin, httpProtected, httpAuthStatus, httpTest, httpAddToCart } = require("../controllers/auth.controller");
 
 
 const Products = require("../models/products.model.js");
@@ -37,6 +37,7 @@ app.use(cors({
 app.use(cookieParser());
 
 app.use(express.json());
+//app.use(session({ /* session config */ }));
 
 app.use(express.static(path.join(__dirname, '..', 'static')));
 
@@ -55,6 +56,8 @@ app.post("/register", httpRegisterUser);
 app.post("/protected", httpProtected);
 app.get("/auth-status", httpAuthStatus);
 app.get("/test-cookie", httpTest);
+app.post('/cart', httpAddToCart);
+
 
 
 
